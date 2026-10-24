@@ -20,7 +20,9 @@ plt.rcParams.update({'figure.max_open_warning': 0})
 # ----------------------------------------------------------------------------------
 # 1. FUNCIÓN DE CARGA Y LIMPIEZA DE DATOS
 # ----------------------------------------------------------------------------------
-@st.cache_data
+# cache_resource y no cache_data: no serializa el DataFrame (en la demo con stlite el pandas
+# de Pyodide falla al deserializar fechas) y la app nunca modifica el df cacheado.
+@st.cache_resource
 def load_and_clean_data(file_path="vgchartz-2024.csv"):
     try:
         df = pd.read_csv(file_path)
@@ -119,7 +121,7 @@ if app_mode == "dashboard":
     st.markdown("---")
 
     tabs = st.tabs([
-        "Introducción & Auditoría",
+        "Introducción",
         "Catálogo vs ventas",
         "Concentración del mercado",
         "Crítica y regiones",
@@ -456,11 +458,16 @@ if app_mode == "dashboard":
             fig7, axes_s = plt.subplots(1, 2, figsize=(16, 5))
             sns.barplot(data=df_monthly, x="month_es", y="total_sales_millions", ax=axes_s[0], color="#4a90e2", alpha=0.8)
             axes_s[0].tick_params(axis="x", rotation=45)
+            axes_s[0].set(xlabel="", ylabel="Ventas (millones de unidades)", title="Ventas totales (barras) y juegos lanzados (línea)")
             ax0_2 = axes_s[0].twinx()
             sns.lineplot(data=df_monthly, x="month_es", y="titles_launched", ax=ax0_2, color="#d0021b", marker="o")
+            ax0_2.set_ylabel("Juegos lanzados", color="#d0021b")
+            ax0_2.grid(False)
 
             sns.barplot(data=df_monthly, x="month_es", y="avg_sales_per_title", ax=axes_s[1], palette="Oranges_r", hue="month_es", legend=False)
             axes_s[1].tick_params(axis="x", rotation=45)
+            axes_s[1].set(xlabel="", ylabel="Media por juego (millones de unidades)", title="Ventas medias por juego según el mes")
+            plt.tight_layout()
             st.pyplot(fig7)
 
             st.markdown("---")

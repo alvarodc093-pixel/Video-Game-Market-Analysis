@@ -2,7 +2,9 @@
 
 Análisis exploratorio de 64.016 videojuegos del histórico de VGChartz y un dashboard en Streamlit para explorarlo.
 
-**App:** https://eda-games-apdqgafan5itappced9lpes.streamlit.app/
+**Demo:** https://video-game-market-analysis.vercel.app
+
+La demo ejecuta la app de Streamlit directamente en el navegador con [stlite](https://github.com/whitphx/stlite), así que no hay servidor que se duerma. La primera carga tarda unos 20-30 segundos.
 
 ## Preguntas
 
@@ -66,6 +68,7 @@ El notebook está en `Notebook/Preprocesamiento.ipynb` y lee el CSV desde `../Da
 
 ```text
 ├── App.py                         # Dashboard de Streamlit
+├── index.html                     # Demo web (stlite)
 ├── Data/vgchartz-2024.csv         # Dataset
 ├── Notebook/Preprocesamiento.ipynb  # Limpieza y EDA
 ├── requirements.txt
