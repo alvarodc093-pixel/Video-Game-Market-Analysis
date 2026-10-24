@@ -1,318 +1,81 @@
 # Video Game Market Analysis (VGChartz 2024)
 
-## Descripción del Proyecto
+Análisis exploratorio de 64.016 videojuegos del histórico de VGChartz y un dashboard en Streamlit para explorarlo.
 
-Este proyecto analiza más de 64.000 videojuegos utilizando datos extraídos de VGChartz con el objetivo de identificar patrones de mercado, tendencias históricas y factores relacionados con el éxito comercial de los videojuegos.
+**App:** https://eda-games-apdqgafan5itappced9lpes.streamlit.app/
 
-A través de un Análisis Exploratorio de Datos (EDA), se estudian aspectos clave de la industria como:
+## Preguntas
 
-* Evolución del mercado a lo largo del tiempo.
-* Géneros más populares y rentables.
-* Consolas con mayor impacto comercial.
-* Publishers líderes de la industria.
-* Diferencias entre regiones geográficas.
-* Relación entre la valoración crítica y las ventas.
+- ¿Qué géneros, plataformas y publishers concentran las ventas?
+- ¿Cómo han evolucionado los lanzamientos y las ventas por año?
+- ¿En qué se diferencian Norteamérica, Europa (PAL) y Japón?
+- ¿Influye la nota de la crítica en las ventas?
+- ¿En qué época del año salen los superventas?
 
-El proyecto está orientado a la construcción de un dashboard interactivo en Streamlit y a la presentación de insights de negocio mediante técnicas de storytelling.
+## Datos
 
-App desplegada: https://eda-games-apdqgafan5itappced9lpes.streamlit.app/
+[VGChartz 2024](https://www.kaggle.com/datasets/asaniczka/video-game-sales-2024): 64.016 filas y 14 columnas (título, consola, género, publisher, desarrollador, nota de la crítica, ventas totales y por región, fecha de lanzamiento e imagen).
 
----
+**Las ventas están en millones de unidades, no en dinero**, y corresponden sobre todo a copias físicas.
 
-# Objetivos del Proyecto
+El dataset tiene muchos huecos y conviene tenerlos presentes al leer los resultados:
 
-Responder a las siguientes preguntas de negocio:
+| Columna        | % nulos |
+| -------------- | ------- |
+| `critic_score` | 89,6 %  |
+| `jp_sales`     | 89,5 %  |
+| `na_sales`     | 80,3 %  |
+| `pal_sales`    | 80,0 %  |
+| `other_sales`  | 76,4 %  |
+| `total_sales`  | 70,4 %  |
 
-### Mercado
+No he imputado ventas ni notas: con tantos nulos, rellenarlos inventaría la mayor parte de los datos. Cada análisis usa el subconjunto que tiene la información necesaria (por ejemplo, 17.570 juegos con ventas o 3.978 con nota y ventas).
 
-* ¿Qué géneros dominan la industria del videojuego?
-* ¿Qué plataformas generan mayores ventas?
-* ¿Qué publishers lideran el mercado?
+## Resultados
 
-### Evolución Temporal
+- **Concentración:** el 1 % de los juegos más vendidos acumula el 16,7 % de las unidades, y los 10 primeros publishers el 56,7 %. La mediana de un juego es de 0,14 M de unidades.
+- **Géneros:** Sports (1.188 M), Action (1.126 M) y Shooter (996 M) lideran en ventas.
+- **Plataformas:** PS2 (1.028 M), Xbox 360 (860 M) y PS3 (840 M). PlayStation coloca tres consolas en el top 5.
+- **Publishers:** Activision (723 M), Electronic Arts (644 M) y EA Sports (486 M).
+- **Regiones:** Norteamérica suma 3.346 M de unidades, Europa 1.917 M y Japón 688 M. El género líder es Sports en Norteamérica, Action en Europa y Role-Playing en Japón. Las Xbox venden entre el 67 % y el 75 % en Norteamérica y casi nada en Japón.
+- **Crítica:** la relación con las ventas es positiva pero moderada (Spearman 0,36). La mediana de ventas pasa de 0,34 M para notas de 7–8 a 1,45 M para notas de 9–10.
+- **Estacionalidad:** el 51 % de los superventas (top 5 %, más de 1,44 M de unidades) sale en el cuarto trimestre.
+- **Evolución:** las ventas registradas tocan techo en 2008 (538 M) y luego caen casi a cero. Esa caída es un efecto del dataset, no del mercado: VGChartz mide sobre todo ventas físicas y dejó de actualizar muchos títulos recientes justo cuando el mercado se movía a digital.
 
-* ¿Cómo ha evolucionado la industria a lo largo de los años?
-* ¿Cuándo se produjo el pico de ventas del mercado?
+## Dashboard
 
-### Rendimiento Comercial
+La app (`App.py`) tiene cuatro secciones:
 
-* ¿Existe relación entre la puntuación de la crítica y las ventas?
+- **Dashboard general:** catálogo frente a ventas, concentración por consola, género y publisher, crítica y regiones, y estacionalidad.
+- **Buscador y catálogo:** ficha de cada juego y catálogo por publisher o por consola, con filtros de año y género.
+- **Títulos líderes:** ranking de los juegos más vendidos.
+- **Datos:** muestra del dataset limpio.
 
-### Análisis Regional
+El PC se mantiene en el catálogo aunque no tenga ventas, porque VGChartz no recoge ventas digitales. En los rankings de ventas solo cuentan los juegos con ventas registradas.
 
-* ¿Cómo varían las preferencias de consumo entre Norteamérica, Europa y Japón?
+## Ejecutarlo en local
 
----
-
-# Dataset
-
-### Fuente
-
-VGChartz 2024
-
-### Tamaño
-
-| Métrica   | Valor  |
-| --------- | ------ |
-| Registros | 64.016 |
-| Variables | 14     |
-
-### Variables principales
-
-| Variable     | Descripción              |
-| ------------ | ------------------------ |
-| title        | Nombre del videojuego    |
-| console      | Plataforma               |
-| genre        | Género                   |
-| publisher    | Empresa publicadora      |
-| developer    | Estudio desarrollador    |
-| critic_score | Puntuación de la crítica |
-| total_sales  | Ventas globales          |
-| na_sales     | Ventas en Norteamérica   |
-| jp_sales     | Ventas en Japón          |
-| pal_sales    | Ventas en Europa/PAL     |
-| other_sales  | Ventas en otras regiones |
-| release_date | Fecha de lanzamiento     |
-| last_update  | Última actualización     |
-| img          | URL de imagen            |
-
----
-
-# Metodología
-
-El análisis se desarrolló siguiendo las fases habituales de un proyecto profesional de análisis de datos:
-
-## 1. Comprensión del problema
-
-Definición de preguntas de negocio y objetivos del análisis.
-
-## 2. Exploración inicial
-
-* Dimensiones del dataset.
-* Tipos de datos.
-* Identificación de posibles problemas de calidad.
-
-## 3. Limpieza de datos
-
-* Eliminación de duplicados.
-* Conversión de variables temporales.
-* Gestión de valores nulos.
-* Creación de subconjuntos específicos para cada análisis.
-
-## 4. Análisis exploratorio
-
-### Análisis univariante
-
-* Géneros.
-* Consolas.
-* Publishers.
-
-### Análisis temporal
-
-* Evolución de lanzamientos.
-* Evolución de ventas.
-
-### Análisis regional
-
-* Comparación de mercados.
-* Distribución de ventas por región.
-
-### Análisis de correlación
-
-* Critic Score vs Total Sales.
-
----
-
-# Calidad de los Datos
-
-Durante la auditoría inicial se detectó una elevada presencia de valores faltantes.
-
-## Variables más afectadas
-
-| Variable     | % Valores Nulos |
-| ------------ | --------------- |
-| critic_score | 89.57%          |
-| jp_sales     | 89.49%          |
-| na_sales     | 80.26%          |
-| pal_sales    | 79.97%          |
-| other_sales  | 76.37%          |
-| total_sales  | 70.44%          |
-| last_update  | 72.07%          |
-
-### Decisiones tomadas
-
-No se realizaron imputaciones artificiales sobre variables de ventas o puntuaciones debido a la elevada proporción de datos faltantes.
-
-En su lugar:
-
-* Se mantuvieron los datos originales.
-* Se crearon subconjuntos específicos para cada análisis.
-* Se evitaron transformaciones que pudieran introducir sesgos.
-
-Esta decisión garantiza la integridad y fiabilidad de las conclusiones obtenidas.
-
----
-
-# Principales Análisis Realizados
-
-## Distribución de Géneros
-
-Identificación de los géneros con mayor presencia dentro del catálogo.
-
-### Pregunta de negocio
-
-¿Qué tipo de videojuegos predominan en la industria?
-
----
-
-## Distribución de Consolas
-
-Análisis de las plataformas con mayor número de títulos publicados.
-
-### Pregunta de negocio
-
-¿Qué ecosistemas concentran la mayor actividad de desarrollo?
-
----
-
-## Top Publishers por Ventas
-
-Ranking de compañías según ventas globales acumuladas.
-
-### Pregunta de negocio
-
-¿Quién controla el mercado del videojuego?
-
----
-
-## Consolas con Mayores Ventas
-
-Comparación de ingresos generados por plataforma.
-
-### Pregunta de negocio
-
-¿Qué plataformas han sido más exitosas comercialmente?
-
----
-
-## Evolución Temporal
-
-Análisis histórico de:
-
-* Número de lanzamientos.
-* Ventas globales.
-
-### Pregunta de negocio
-
-¿Cómo ha evolucionado la industria del videojuego?
-
----
-
-## Ventas Regionales
-
-Comparación entre:
-
-* Norteamérica
-* Europa (PAL)
-* Japón
-* Otras regiones
-
-### Pregunta de negocio
-
-¿Existen diferencias culturales entre mercados?
-
----
-
-## Relación entre Crítica y Ventas
-
-Estudio de correlación entre:
-
-* Critic Score
-* Total Sales
-
-### Pregunta de negocio
-
-¿La calidad percibida influye en el éxito comercial?
-
----
-
-# Tecnologías Utilizadas
-
-## Lenguaje
-
-* Python
-
-## Librerías
-
-* Pandas
-* NumPy
-* Matplotlib
-* Seaborn
-
-## Visualización
-
-* Streamlit
-* Plotly
-
-## Entorno
-
-* Jupyter Notebook
-* Visual Studio Code
-
----
-
-# Estructura del Proyecto
-
-```text
-VideoGameMarketAnalysis/
-
-│
-├── data/
-│   └── vgchartz-2024.csv
-│
-├── notebooks/
-│   └── EDA_VideoGames.ipynb
-│
-├── app.py
-│
-├── requirements.txt
-│
-├── README.md
-│
-└── .gitignore
+```bash
+pip install -r requirements.txt
+streamlit run App.py
 ```
 
----
+El notebook está en `Notebook/Preprocesamiento.ipynb` y lee el CSV desde `../Data/`.
 
-# Dashboard Interactivo
+## Estructura
 
-El proyecto incluye un dashboard desarrollado con Streamlit que permite explorar los resultados de forma interactiva.
+```text
+├── App.py                         # Dashboard de Streamlit
+├── Data/vgchartz-2024.csv         # Dataset
+├── Notebook/Preprocesamiento.ipynb  # Limpieza y EDA
+├── requirements.txt
+└── LICENSE
+```
 
-### Secciones principales
+## Tecnologías
 
-* Overview
-* Market Analysis
-* Publishers
-* Consoles
-* Sales Analysis
-* Regional Analysis
-* Critic Analysis
+Python, Pandas, NumPy, Matplotlib, Seaborn, Streamlit y Jupyter.
 
----
+## Autor
 
-# Principales Insights Esperados
-
-* Identificación de los géneros más rentables.
-* Descubrimiento de las plataformas más exitosas.
-* Concentración de ventas en grandes publishers.
-* Diferencias de comportamiento entre regiones.
-* Evaluación del impacto de la crítica especializada sobre las ventas.
-
-
----
-
-# Autor
-
-Álvaro Domingo
-
-Proyecto desarrollado como parte de mi portfolio de Data Analytics con el objetivo de aplicar técnicas de análisis exploratorio, visualización y comunicación de datos en un caso real relacionado con la industria del videojuego.
+Álvaro Domingo Cordón · [LinkedIn](https://www.linkedin.com/in/alvaro-domingo/) · [GitHub](https://github.com/alvarodc093-pixel)
