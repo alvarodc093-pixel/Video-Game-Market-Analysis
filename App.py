@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -113,7 +114,7 @@ st.sidebar.info(
 if app_mode == "dashboard":
     df_filtered = df.copy()
 
-    st.title("🎮 Video Game Market Analytics")
+    st.title("Video Game Market Analytics")
     st.markdown("""
     ### Qué se vende, dónde y cuándo: 64.000 juegos del histórico de VGChartz
     *Las ventas están en millones de unidades y corresponden sobre todo a copias físicas en consola.*
@@ -264,9 +265,13 @@ if app_mode == "dashboard":
             df_critics = df_filtered[(df_filtered["critic_score"].notnull()) & (df_filtered["critic_score"] > 0) & (df_filtered["total_sales"] > 0)] if not df_filtered.empty else pd.DataFrame()
             if not df_critics.empty:
                 fig5, ax5 = plt.subplots(figsize=(10, 4.5))
-                sns.scatterplot(data=df_critics, x="critic_score", y="total_sales", alpha=0.4, color="teal", ax=ax5)
-                sns.regplot(data=df_critics, x="critic_score", y="total_sales", scatter=False, color="crimson", ax=ax5)
-                ax5.set_yscale("log")
+                # La tendencia se ajusta sobre log10(ventas): en escala lineal la recta no
+                # representa una distribución tan sesgada.
+                ventas_log = np.log10(df_critics["total_sales"])
+                sns.regplot(x=df_critics["critic_score"], y=ventas_log, ax=ax5,
+                            scatter_kws={"alpha": 0.35, "color": "teal", "s": 12}, line_kws={"color": "crimson"})
+                ax5.set_yticks([-2, -1, 0, 1], ["0,01", "0,1", "1", "10"])
+                ax5.set(xlabel="Nota de la crítica (0-10)", ylabel="Ventas (millones de unidades, escala log)")
                 st.pyplot(fig5)
         with col_c2:
             st.markdown("#### Lectura")
