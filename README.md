@@ -1,10 +1,17 @@
-# Video Game Market Analysis (VGChartz 2024)
+# Video Game Market Analysis
 
-Análisis exploratorio de 64.016 videojuegos del histórico de VGChartz y un dashboard en Streamlit para explorarlo.
+**Qué géneros, plataformas y regiones concentran las ventas de videojuegos: análisis de 64.016 juegos del histórico de VGChartz.**
 
-**Demo:** https://video-game-market-analysis.vercel.app
+[![Demo](https://img.shields.io/badge/Demo-en%20vivo-2ea44f?style=flat-square)](https://video-game-market-analysis.vercel.app) ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white) ![Pandas](https://img.shields.io/badge/Pandas-análisis-150458?style=flat-square&logo=pandas&logoColor=white) ![Seaborn](https://img.shields.io/badge/Seaborn-gráficos-4C72B0?style=flat-square) ![Streamlit](https://img.shields.io/badge/Streamlit-app-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
 
-La demo ejecuta la app de Streamlit directamente en el navegador con [stlite](https://github.com/whitphx/stlite), así que no hay servidor que se duerma. La primera carga tarda unos 20-30 segundos.
+![Dashboard de Video Game Market Analysis](docs/img/dashboard.png)
+
+## En resumen
+
+- **Problema:** lanzar un juego en el género, la plataforma o la fecha equivocados sale caro, y las ventas siguen una cola larga muy desigual.
+- **Datos:** VGChartz 2024: 64.016 juegos, con ventas por región para 17.570 de ellos (las ventas están en millones de unidades).
+- **Resultado:** el 1 % de los juegos más vendidos acumula el 16,7 % de las unidades, el 51 % de los superventas sale en el cuarto trimestre y Japón es el mercado que más se separa del resto (lidera el rol).
+- **App:** dashboard en Streamlit con buscador, catálogo por publisher y consola y ranking de superventas, ejecutado en el navegador.
 
 ## Preguntas
 
@@ -45,6 +52,8 @@ No he imputado ventas ni notas: con tantos nulos, rellenarlos inventaría la may
 - **Evolución:** las ventas registradas tocan techo en 2008 (538 M) y luego caen casi a cero. Esa caída es un efecto del dataset, no del mercado: VGChartz mide sobre todo ventas físicas y dejó de actualizar muchos títulos recientes justo cuando el mercado se movía a digital.
 
 ## Dashboard
+
+![Crítica frente a ventas y ventas por región](docs/img/critica-regiones.png)
 
 La app (`App.py`) tiene cuatro secciones:
 
